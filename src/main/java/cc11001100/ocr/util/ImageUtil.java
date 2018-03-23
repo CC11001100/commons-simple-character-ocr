@@ -1,5 +1,8 @@
 package cc11001100.ocr.util;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -13,15 +16,16 @@ import java.util.Map;
  */
 public class ImageUtil {
 
+	private static Logger logger = LogManager.getLogger(ImageUtil.class);
+
 	/**
 	 * 计算图像的哈希值，即将图片内容压缩为一个整数
-	 * <p>
-	 * NOTE: 适用于小图像
 	 *
-	 * @param img
-	 * @return
+	 * @apiNote 只适用于小图像
+	 * @param img 要被hash的图像
+	 * @return hashcode
 	 */
-	public static int imgHashCode(BufferedImage img) {
+	public static int imageHashCode(BufferedImage img) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < img.getWidth(); i++) {
 			for (int j = 0; j < img.getHeight(); j++) {
@@ -32,29 +36,44 @@ public class ImageUtil {
 	}
 
 	/**
-	 * 根据字符图片生成字符字典
+	 * 从标注好的目录读入映射字典
 	 *
-	 * @param charDirectory
+	 * @param taggedCharImageDir 标注好的字符图片所在的目录
+	 * @param fileFilter         读此目录的可筛选
+	 * @return 映射字典
+	 * @see #genDictionary(String)
 	 */
-	public static Map<Integer, String> genDictionary(String charDirectory, FileFilter fileFilter) {
+	public static Map<Integer, String> genDictionary(String taggedCharImageDir, FileFilter fileFilter) {
 		Map<Integer, String> dictionaryMap = new HashMap<>();
-		File[] charImages = new File(charDirectory).listFiles(fileFilter);
-		assert charImages != null;
-		for (File charImgFile : charImages) {
+		File[] charImageFiles = new File(taggedCharImageDir).listFiles(fileFilter);
+		if (charImageFiles == null) {
+			throw new IllegalArgumentException("read char dictionary map null, check dir " + taggedCharImageDir + " or filter");
+		}
+		for (File charImageFile : charImageFiles) {
 			try {
-				BufferedImage charBufferedImage = ImageIO.read(charImgFile);
-				int charHashCode = imgHashCode(charBufferedImage);
-				String charName = charImgFile.getName().split("\\.")[0];
+				BufferedImage charBufferedImage = ImageIO.read(charImageFile);
+				int charHashCode = imageHashCode(charBufferedImage);
+				String charName = charImageFile.getName().split("\\.")[0];
 				dictionaryMap.put(charHashCode, charName);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("read file {} error", charImageFile.getAbsolutePath());
 			}
+		}
+		if (dictionaryMap.isEmpty()) {
+			throw new IllegalArgumentException("read char dictionary map empty, check dir " + taggedCharImageDir + " or filter");
 		}
 		return dictionaryMap;
 	}
 
-	public static Map<Integer, String> genDictionary(String charDirectory){
-		return genDictionary(charDirectory, file -> true);
+	/**
+	 * 从标注好的目录读入映射字典
+	 *
+	 * @param taggedCharImageDir 标注好的字符图片所在的目录
+	 * @return 映射字典
+	 * @see #genDictionary(String, FileFilter)
+	 */
+	public static Map<Integer, String> genDictionary(String taggedCharImageDir) {
+		return genDictionary(taggedCharImageDir, file -> true);
 	}
 
 }
