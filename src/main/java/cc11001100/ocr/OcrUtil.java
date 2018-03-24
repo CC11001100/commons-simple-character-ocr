@@ -115,6 +115,13 @@ public class OcrUtil {
 	 * @param toBasePath   处理后保存到的文件夹
 	 */
 	public void init(String fromBasePath, FileFilter filter, String toBasePath) {
+
+		// 自动创建目录
+		File toBasePathFile = new File(toBasePath);
+		if (!toBasePathFile.exists()) {
+			toBasePathFile.mkdirs();
+		}
+
 		File[] files = new File(fromBasePath).listFiles(filter);
 		if (files == null) {
 			logger.info("{} not one file can read, check dir or filter, exit.", fromBasePath);
@@ -132,8 +139,10 @@ public class OcrUtil {
 					logger.error("read file {} failed.", file.getAbsolutePath());
 					return;
 				}
-				BufferedImage cleanedImage = imageClean.clean(img);
-				List<BufferedImage> charList = imageSplit.split(cleanedImage);
+				if (imageClean != null) {
+					img = imageClean.clean(img);
+				}
+				List<BufferedImage> charList = imageSplit.split(img);
 				charList.forEach(x -> {
 					int hashcode = imageHashCode(x);
 					rawDictionaryMap.putIfAbsent(hashcode, x);
@@ -197,8 +206,10 @@ public class OcrUtil {
 	 * @return
 	 */
 	public String ocr(BufferedImage img) {
-		BufferedImage cleanedImg = imageClean.clean(img);
-		List<BufferedImage> charList = imageSplit.split(cleanedImg);
+		if (imageClean != null) {
+			img = imageClean.clean(img);
+		}
+		List<BufferedImage> charList = imageSplit.split(img);
 		return charList.stream()
 				.map(x -> dictionaryMap.getOrDefault(imageHashCode(x), ""))
 				.collect(joining());

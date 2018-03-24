@@ -1,5 +1,7 @@
 package cc11001100.ocr.clean;
 
+import cc11001100.ocr.split.ImageSplit;
+import cc11001100.ocr.split.ImageSplitImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +24,7 @@ public class ImageCleanImpl implements ImageClean {
 	private int areaSize;
 
 	public ImageCleanImpl() {
-		this(20);
+		this(10);
 	}
 
 	public ImageCleanImpl(int areaSize) {
@@ -66,7 +68,7 @@ public class ImageCleanImpl implements ImageClean {
 				}
 
 				// 为此颜色分配flag
-				int currentColor = rawImage.getRGB(i, j) & 0XFFFFFF;
+				int currentColor = rawImage.getRGB(i, j);
 				Integer currentFlag = nextFlag++;
 
 				int currentAreaSize = waterFlow(rawImage, book, i, j, currentColor, currentFlag);
@@ -86,12 +88,14 @@ public class ImageCleanImpl implements ImageClean {
 		BufferedImage resultImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
-				int currentColor = rawImage.getRGB(i, j) & 0XFFFFFF;
-				boolean toBeFiltered = book[i][j] == maxAreaSizeFlag  // 背景色
-						|| rgbEquals(currentColor, maxAreaSizeColor)
-						|| flagToAreaSizeMap.get(book[i][j]) <= areaSizeFilter; // 连通域面积小于等于要过滤掉的连通域大小
+				int currentColor = rawImage.getRGB(i, j);
+				boolean isTransparentColor =  ((currentColor & 0XFF000000) >> 24) == 0;  // 透明色
+				boolean toBeFiltered = book[i][j] == maxAreaSizeFlag  // 背景色过滤
+						|| currentColor == maxAreaSizeColor
+						|| isTransparentColor // 透明色过滤
+						|| flagToAreaSizeMap.get(book[i][j]) <= areaSizeFilter; // 连通域面积过滤
 				if (toBeFiltered) {
-					resultImage.setRGB(i, j, 0X00FFFFFF);
+					resultImage.setRGB(i, j, ImageSplitImpl.DEFAULT_BACKGROUND_COLOR);
 				} else {
 					resultImage.setRGB(i, j, currentColor & 0X00FFFFFF);
 				}
@@ -130,7 +134,7 @@ public class ImageCleanImpl implements ImageClean {
 				}
 
 				// 如果这一点没有被访问过，并且颜色相同
-				boolean canMove = book[nextX][nextY] == 0 && rgbEquals(img.getRGB(nextX, nextY), color);
+				boolean canMove = book[nextX][nextY] == 0 && img.getRGB(nextX, nextY) == color;
 				if (canMove) {
 					book[nextX][nextY] = flag;
 					areaSize += waterFlow(img, book, nextX, nextY, color, flag);
@@ -139,17 +143,6 @@ public class ImageCleanImpl implements ImageClean {
 		}
 
 		return areaSize;
-	}
-
-	/**
-	 * 判断两个像素点的rgb值是否相等，忽略alpha通道
-	 *
-	 * @param rgb1
-	 * @param rgb2
-	 * @return
-	 */
-	private boolean rgbEquals(int rgb1, int rgb2) {
-		return (rgb1 & 0XFFFFFF) == (rgb2 & 0XFFFFFF);
 	}
 
 }

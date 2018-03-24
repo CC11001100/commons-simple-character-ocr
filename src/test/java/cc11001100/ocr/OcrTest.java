@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class OcrTest {
 
-	@Test
+//	@Test
 	public void testMain() {
 
 		String captchaUrl = "https://www.w3cschool.cn/scode";

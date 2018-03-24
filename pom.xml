@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cc11001100</groupId>
-    <artifactId>commons-simple-charactor-ocr</artifactId>
+    <artifactId>commons-simple-character-ocr</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -39,7 +39,7 @@
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
                     <outputDirectory>${project.build.directory}/maven-repo</outputDirectory>
-                    <branch>refs/heads/master</branch>
+                    <branch>refs/heads/commons-simple-character-ocr</branch>
                     <includes>
                         <include>**/*</include>
                     </includes>

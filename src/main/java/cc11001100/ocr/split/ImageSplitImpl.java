@@ -15,8 +15,10 @@ public class ImageSplitImpl implements ImageSplit {
 	private Integer dropW;
 	private Integer dropH;
 
+	public static final Integer DEFAULT_BACKGROUND_COLOR = 0X00FFFFFF;
+
 	public ImageSplitImpl() {
-		this(0XFFFFFF, 0, 0);
+		this(DEFAULT_BACKGROUND_COLOR, 0, 0);
 	}
 
 	public ImageSplitImpl(Integer backgroundColor) {
@@ -24,7 +26,7 @@ public class ImageSplitImpl implements ImageSplit {
 	}
 
 	public ImageSplitImpl(Integer dropW, Integer dropH) {
-		this(0XFFFFFF, dropW, dropH);
+		this(DEFAULT_BACKGROUND_COLOR, dropW, dropH);
 	}
 
 	public ImageSplitImpl(Integer backgroundColor, Integer dropW, Integer dropH) {
@@ -100,7 +102,6 @@ public class ImageSplitImpl implements ImageSplit {
 				currentColumnIsBackground = (img.getRGB(i, j) & 0XFFFFFF) == backgroundColor;
 			}
 
-			// TODO fix bug
 			// 进入字符区域
 			if (lastColumnIsBackground && !currentColumnIsBackground) {
 				beginColumn = i;
@@ -133,7 +134,7 @@ public class ImageSplitImpl implements ImageSplit {
 
 			boolean currentRowIsBackground = true;
 			for (int j = 0; currentRowIsBackground && j < w; j++) {
-				currentRowIsBackground = (img.getRGB(j, i) & 0X00FFFFFF) == backgroundColor;
+				currentRowIsBackground = isSeparatorPoint(img.getRGB(j, i));
 			}
 
 			if (!currentRowIsBackground) {
@@ -149,7 +150,7 @@ public class ImageSplitImpl implements ImageSplit {
 
 			boolean currentRowIsBackground = true;
 			for (int j = 0; currentRowIsBackground && j < w; j++) {
-				currentRowIsBackground = (img.getRGB(j, i) & 0XFFFFFF) == backgroundColor;
+				currentRowIsBackground = isSeparatorPoint(img.getRGB(j, i));
 			}
 
 			if (!currentRowIsBackground) {
@@ -159,6 +160,17 @@ public class ImageSplitImpl implements ImageSplit {
 		}
 
 		return img.getSubimage(0, upY, w, downY - upY + 1);
+	}
+
+	/**
+	 * 判断一个点是否可以作为分隔符
+	 *
+	 * @param rgb
+	 * @return
+	 */
+	private boolean isSeparatorPoint(int rgb) {
+		// 颜色一致或者是背景色都认为时候分隔符
+		return rgb == backgroundColor || ((rgb & 0XFF000000) >> 24) == 0;
 	}
 
 }

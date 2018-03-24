@@ -1,8 +1,29 @@
 ## 通用简单字符验证码识别框架
 
-
 ### 使用流程
-1. blabla
+1. 在pom.xml中添加依赖
+添加仓库：
+```
+<repositories>
+    <repository>
+        <id>maven-repo-cc11001100</id>
+        <url>https://raw.github.com/cc11001100/maven-repo/commons-simple-character-ocr/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```
+添加dependency：
+```
+<dependency>
+    <groupId>cc11001100</groupId>
+    <artifactId>commons-simple-character-ocr</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+2. 下载
 2. blabla
 2. blabla
 2. blabla
