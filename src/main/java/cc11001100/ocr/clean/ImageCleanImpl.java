@@ -22,7 +22,7 @@ public class ImageCleanImpl implements ImageClean {
 	private int areaSize;
 
 	public ImageCleanImpl() {
-		this(10);
+		this(20);
 	}
 
 	public ImageCleanImpl(int areaSize) {
@@ -47,10 +47,14 @@ public class ImageCleanImpl implements ImageClean {
 		int h = rawImage.getHeight();
 		int[][] book = new int[w][h];
 
-		// 连通域最大的色块将被认为是背景色，这样实现了自动识别背景色
-		Map<Integer, Integer> flagAreaSizeMap = new HashMap<>();
-		int currentFlag = 1;
-		int maxAreaSizeFlag = currentFlag;  // 记录连通域面积最大的标志位，具有这个标记位的将被认定为是背景色
+		// <flag, areaSize> 记录每个颜色区域的大小
+		Map<Integer, Integer> flagToAreaSizeMap = new HashMap<>();
+		// 当出现下一个不同颜色的时候为其分配的标记位
+		int nextFlag = 1;
+		// 当前面积最大的预期的flag，具有这个标记位的将被认定为是背景色，这样实现了自动识别背景色
+		int maxAreaSizeFlag = nextFlag;
+		// 为什么需要记录背景色的颜色，因为比如数字8会产生两个封闭的背景色块要能够识别出来
+		int maxAreaSizeColor = -1;
 
 		// 1. 标记
 		for (int i = 0; i < w; i++) {
@@ -61,18 +65,20 @@ public class ImageCleanImpl implements ImageClean {
 					continue;
 				}
 
-				// 开始标记一个新的连通域
-				book[i][j] = currentFlag;
-				int currentColor = rawImage.getRGB(i, j);
+				// 为此颜色分配flag
+				int currentColor = rawImage.getRGB(i, j) & 0XFFFFFF;
+				Integer currentFlag = nextFlag++;
+
 				int currentAreaSize = waterFlow(rawImage, book, i, j, currentColor, currentFlag);
 
 				// 记录最大连通域
-				if (currentAreaSize > flagAreaSizeMap.getOrDefault(maxAreaSizeFlag, -1)) {
+				if (currentAreaSize > flagToAreaSizeMap.getOrDefault(maxAreaSizeFlag, -1)) {
 					maxAreaSizeFlag = currentFlag;
+					maxAreaSizeColor = currentColor;
 				}
 
-				flagAreaSizeMap.put(currentFlag, currentAreaSize);
-				currentFlag++;
+				flagToAreaSizeMap.put(currentFlag, currentAreaSize);
+				nextFlag++;
 			}
 		}
 
@@ -80,10 +86,10 @@ public class ImageCleanImpl implements ImageClean {
 		BufferedImage resultImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		for (int i = 0; i < w; i++) {
 			for (int j = 0; j < h; j++) {
-				int currentColor = rawImage.getRGB(i, j);
+				int currentColor = rawImage.getRGB(i, j) & 0XFFFFFF;
 				boolean toBeFiltered = book[i][j] == maxAreaSizeFlag  // 背景色
-//						|| (currentColor & 0XFF000000) >> 24 == -1  // 透明色
-						|| flagAreaSizeMap.get(book[i][j]) <= areaSizeFilter; // 连通域面积小于等于要过滤掉的连通域大小
+						|| rgbEquals(currentColor, maxAreaSizeColor)
+						|| flagToAreaSizeMap.get(book[i][j]) <= areaSizeFilter; // 连通域面积小于等于要过滤掉的连通域大小
 				if (toBeFiltered) {
 					resultImage.setRGB(i, j, 0X00FFFFFF);
 				} else {
@@ -124,7 +130,7 @@ public class ImageCleanImpl implements ImageClean {
 				}
 
 				// 如果这一点没有被访问过，并且颜色相同
-				boolean canMove = book[nextX][nextY] == 0 && (img.getRGB(nextX, nextY) & 0X00FFFFFF) == (color & 0X00FFFFFF);
+				boolean canMove = book[nextX][nextY] == 0 && rgbEquals(img.getRGB(nextX, nextY), color);
 				if (canMove) {
 					book[nextX][nextY] = flag;
 					areaSize += waterFlow(img, book, nextX, nextY, color, flag);
@@ -133,6 +139,17 @@ public class ImageCleanImpl implements ImageClean {
 		}
 
 		return areaSize;
+	}
+
+	/**
+	 * 判断两个像素点的rgb值是否相等，忽略alpha通道
+	 *
+	 * @param rgb1
+	 * @param rgb2
+	 * @return
+	 */
+	private boolean rgbEquals(int rgb1, int rgb2) {
+		return (rgb1 & 0XFFFFFF) == (rgb2 & 0XFFFFFF);
 	}
 
 }

@@ -12,18 +12,57 @@ import java.util.List;
 public class ImageSplitImpl implements ImageSplit {
 
 	private Integer backgroundColor;
+	private Integer dropW;
+	private Integer dropH;
 
 	public ImageSplitImpl() {
-		this(0XFFFFFF);
+		this(0XFFFFFF, 0, 0);
 	}
 
 	public ImageSplitImpl(Integer backgroundColor) {
+		this(backgroundColor, 0, 0);
+	}
+
+	public ImageSplitImpl(Integer dropW, Integer dropH) {
+		this(0XFFFFFF, dropW, dropH);
+	}
+
+	public ImageSplitImpl(Integer backgroundColor, Integer dropW, Integer dropH) {
 		this.backgroundColor = backgroundColor;
+		this.dropW = dropW;
+		this.dropH = dropH;
 	}
 
 	@Override
 	public List<BufferedImage> split(BufferedImage img) {
 		return mattingCharacter(img);
+	}
+
+	public Integer getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public ImageSplitImpl setBackgroundColor(Integer backgroundColor) {
+		this.backgroundColor = backgroundColor;
+		return this;
+	}
+
+	public Integer getDropW() {
+		return dropW;
+	}
+
+	public ImageSplitImpl setDropW(Integer dropW) {
+		this.dropW = dropW;
+		return this;
+	}
+
+	public Integer getDropH() {
+		return dropH;
+	}
+
+	public ImageSplitImpl setDropH(Integer dropH) {
+		this.dropH = dropH;
+		return this;
 	}
 
 	/**
@@ -33,6 +72,19 @@ public class ImageSplitImpl implements ImageSplit {
 	 * @return 切割出的有序单个字符图片
 	 */
 	public List<BufferedImage> mattingCharacter(BufferedImage img) {
+
+		// 可能会有一些干扰边，是否需要去除
+		if (dropW != 0 || dropH != 0) {
+			img = img.getSubimage(dropW / 2, dropH / 2, img.getWidth() - dropW, img.getHeight() - dropH);
+		}
+
+//		for(int i=0; i<img.getWidth(); i++){
+//			for(int j=0; j<img.getHeight(); j++){
+//				System.out.printf("%6s  ", Integer.toString(0XFFFFFF - (img.getRGB(i, j) & 0XFFFFFF), 16).toUpperCase());
+//			}
+//			System.out.println();
+//		}
+
 		List<BufferedImage> list = new ArrayList<>();
 
 		int w = img.getWidth();
@@ -46,10 +98,7 @@ public class ImageSplitImpl implements ImageSplit {
 			boolean currentColumnIsBackground = true;
 			for (int j = 0; currentColumnIsBackground && j < h; j++) {
 				currentColumnIsBackground = (img.getRGB(i, j) & 0XFFFFFF) == backgroundColor;
-				System.out.println(Integer.toString((img.getRGB(i, j) & 0XFFFFFF), 16).toUpperCase());
 			}
-
-			System.out.println(lastColumnIsBackground + ", " + currentColumnIsBackground);
 
 			// TODO fix bug
 			// 进入字符区域

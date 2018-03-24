@@ -45,6 +45,32 @@ public class OcrUtil {
 		this.imageSplit = imageSplit;
 	}
 
+	public ImageClean getImageClean() {
+		return imageClean;
+	}
+
+	public OcrUtil setImageClean(ImageClean imageClean) {
+		this.imageClean = imageClean;
+		return this;
+	}
+
+	public ImageSplit getImageSplit() {
+		return imageSplit;
+	}
+
+	public OcrUtil setImageSplit(ImageSplit imageSplit) {
+		this.imageSplit = imageSplit;
+		return this;
+	}
+
+	public Map<Integer, String> getDictionaryMap() {
+		return dictionaryMap;
+	}
+
+	public void setDictionaryMap(Map<Integer, String> dictionaryMap) {
+		this.dictionaryMap = dictionaryMap;
+	}
+
 	/**
 	 * 初始化
 	 *
@@ -112,6 +138,7 @@ public class OcrUtil {
 					int hashcode = imageHashCode(x);
 					rawDictionaryMap.putIfAbsent(hashcode, x);
 				});
+				logger.info("split {} over", file.getName());
 			});
 		}
 		try {
@@ -122,6 +149,7 @@ public class OcrUtil {
 		}
 
 		// 将分割去重之后的字符图片保存到磁盘上
+		logger.info("begin write distinct char image...");
 		rawDictionaryMap.forEach((k, v) -> {
 			String outputImageFileName = toBasePath + "/" + k + ".png";
 			try {
@@ -134,22 +162,23 @@ public class OcrUtil {
 
 		logger.info("auto process part over, now turn you!");
 		// 判断操作系统类型，自动打开标注文件所在目录
-		if (System.getProperty("os.name").contains("Windows")) {
-			try {
-				Runtime.getRuntime().exec("cmd /c start explorer " + toBasePath);
-			} catch (IOException e) {
-				logger.info("open explorer failed, dir={}", toBasePath);
-			}
-		}
+//		if (System.getProperty("os.name").contains("Windows")) {
+//			try {
+//				Runtime.getRuntime().exec("cmd /c start explorer " + toBasePath);
+//			} catch (IOException e) {
+//				logger.info("open explorer failed, dir={}", toBasePath);
+//			}
+//		}
 	}
 
 	/**
-	 * 从一个已经标准号的目录加载字符映射
+	 * 从一个已经标注号的目录加载字符映射
 	 *
 	 * @param charBaseDir
 	 */
 	public void loadDictionaryMap(String charBaseDir) {
 		dictionaryMap = ImageUtil.genDictionary(charBaseDir);
+		dictionaryMap.forEach((k, v) -> logger.info("load dictionary mapping = ({}, {})", k, v));
 	}
 
 	/**
