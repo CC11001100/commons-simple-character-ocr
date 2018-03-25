@@ -2,6 +2,7 @@ package cc11001100.ocr.clean;
 
 import cc11001100.ocr.split.ImageSplit;
 import cc11001100.ocr.split.ImageSplitImpl;
+import cc11001100.ocr.util.ImageUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -95,7 +96,7 @@ public class ImageCleanImpl implements ImageClean {
 						|| isTransparentColor // 透明色过滤
 						|| flagToAreaSizeMap.get(book[i][j]) <= areaSizeFilter; // 连通域面积过滤
 				if (toBeFiltered) {
-					resultImage.setRGB(i, j, ImageSplitImpl.DEFAULT_BACKGROUND_COLOR);
+					resultImage.setRGB(i, j, ImageUtil.DEFAULT_BACKGROUND_COLOR);
 				} else {
 					resultImage.setRGB(i, j, currentColor & 0X00FFFFFF);
 				}

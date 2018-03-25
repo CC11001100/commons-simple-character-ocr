@@ -1,5 +1,7 @@
 package cc11001100.ocr.split;
 
+import cc11001100.ocr.util.ImageUtil;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,8 @@ public class ImageSplitImpl implements ImageSplit {
 	private Integer dropW;
 	private Integer dropH;
 
-	public static final Integer DEFAULT_BACKGROUND_COLOR = 0X00FFFFFF;
-
 	public ImageSplitImpl() {
-		this(DEFAULT_BACKGROUND_COLOR, 0, 0);
+		this(ImageUtil.DEFAULT_BACKGROUND_COLOR, 0, 0);
 	}
 
 	public ImageSplitImpl(Integer backgroundColor) {
@@ -26,7 +26,7 @@ public class ImageSplitImpl implements ImageSplit {
 	}
 
 	public ImageSplitImpl(Integer dropW, Integer dropH) {
-		this(DEFAULT_BACKGROUND_COLOR, dropW, dropH);
+		this(ImageUtil.DEFAULT_BACKGROUND_COLOR, dropW, dropH);
 	}
 
 	public ImageSplitImpl(Integer backgroundColor, Integer dropW, Integer dropH) {
@@ -169,7 +169,7 @@ public class ImageSplitImpl implements ImageSplit {
 	 * @return
 	 */
 	private boolean isSeparatorPoint(int rgb) {
-		// 颜色一致或者是背景色都认为时候分隔符
+		// 颜色一致或者是透明色都认为是分隔符
 		return rgb == backgroundColor || ((rgb & 0XFF000000) >> 24) == 0;
 	}
 
