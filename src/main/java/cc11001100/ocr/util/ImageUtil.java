@@ -23,9 +23,9 @@ public class ImageUtil {
 	/**
 	 * 计算图像的哈希值，即将图片内容压缩为一个整数
 	 *
-	 * @apiNote 只适用于小图像
 	 * @param img 要被hash的图像
 	 * @return hashcode
+	 * @apiNote 只适用于小图像
 	 */
 	public static int imageHashCode(BufferedImage img) {
 		StringBuilder sb = new StringBuilder();
@@ -55,7 +55,7 @@ public class ImageUtil {
 			try {
 				BufferedImage charBufferedImage = ImageIO.read(charImageFile);
 				int charHashCode = imageHashCode(charBufferedImage);
-				String charName = charImageFile.getName().split("\\.")[0];
+				String charName = FileNameUtil.getFileNameNoExtension(charImageFile.getName());
 				dictionaryMap.put(charHashCode, charName);
 			} catch (IOException e) {
 				logger.error("read file {} error", charImageFile.getAbsolutePath());
