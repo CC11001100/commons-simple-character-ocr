@@ -38,6 +38,7 @@
 6. 这里是几个具体的例子：  
     - [蚂蚁代理免费代理ip爬取（端口图片显示）](http://www.cnblogs.com/cc11001100/p/8648169.html)  
     - [酷伯伯实时免费HTTP代理ip爬取（端口图片显示+document.write）](http://www.cnblogs.com/cc11001100/p/8647555.html)
+    - [电商站新蛋价格字段爬取（价格字段图片显示））](http://www.cnblogs.com/cc11001100/p/8648320.html)
 
 ---
 
@@ -45,9 +46,10 @@
 略鸡肋，只适用于某些特殊情况：   
 1. 比如代理ip网站端口用图片表示的可以直接识别 
     - [蚂蚁代理免费代理ip爬取（端口图片显示）](http://www.cnblogs.com/cc11001100/p/8648169.html)  
-    - [酷伯伯实时免费HTTP代理ip爬取（端口图片显示+document.write）](http://www.cnblogs.com/cc11001100/p/8647555.html)
+    - [酷伯伯实时免费HTTP代理ip爬取（端口图片显示+document.write）](http://www.cnblogs.com/cc11001100/p/8647555.html)  
 2. 比如过于简单的验证码可以直接识别 
-3. 比如电商网站的价格字段的识别 
+3. 比如电商网站的价格字段的识别  
+    - [电商站新蛋价格字段爬取（价格字段图片显示））](http://www.cnblogs.com/cc11001100/p/8648320.html)
 4. 比如编不出的其它场景...  
 
 ---
