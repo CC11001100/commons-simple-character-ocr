@@ -1,8 +1,8 @@
 ## 通用简单字符验证码识别框架
 
 ### 使用流程
-1. 在pom.xml中添加依赖
-    添加仓库：
+1. 在pom.xml中添加依赖  
+    - 添加仓库：
     ```
     <repositories>
         <repository>
@@ -15,7 +15,7 @@
         </repository>
     </repositories>
     ```
-    添加dependency：
+    - 添加dependency：
     ```
     <dependency>
         <groupId>cc11001100</groupId>
@@ -25,7 +25,7 @@
     ```
     所有版本可以去这里看[commons-simple-character-ocr maven repository](https://github.com/CC11001100/maven-repo/tree/commons-simple-character-ocr)
 2. 下载一些图片用于生成标注数据，大致有两种情况 
-    -  有一个地址，直接请求图片就可以直接下载  
+    -  有一个地址，发送请求就可以直接下载图片  
         ``init(String url, int times, String saveBaseDir)``  
     - 图片下载比较麻烦，自己下载完再指定所下载的目录   
         ``init(String fromBasePath, String toBasePath)``
@@ -33,9 +33,10 @@
     ![](https://images2018.cnblogs.com/blog/784924/201803/784924-20180326020539301-1103491062.png)
 4. 告诉ocrUtil去哪里加载上面的文件  
     ``ocrUtil.loadDictionaryMap("E:/test/proxy/ant/char/")``
-5. 然后就可以直接使用了
+5. 然后就可以直接使用了  
     ``String ocr(BufferedImage img)``
 6. 这里是几个具体的例子：  
+    - <a target="_blank" href="http://www.cnblogs.com/cc11001100/p/8648169.html">蚂蚁代理免费代理ip爬取（端口图片显示）</a>
     - [蚂蚁代理免费代理ip爬取（端口图片显示）](http://www.cnblogs.com/cc11001100/p/8648169.html)  
     - [酷伯伯实时免费HTTP代理ip爬取（端口图片显示+document.write）](http://www.cnblogs.com/cc11001100/p/8647555.html)
 
