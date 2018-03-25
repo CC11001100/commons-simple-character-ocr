@@ -1,6 +1,7 @@
 package cc11001100.ocr;
 
 import cc11001100.ocr.split.ImageSplitImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -13,6 +14,7 @@ import java.io.IOException;
  */
 public class SplitTest {
 
+	@Ignore
 	@Test
 	public void test_001() throws IOException {
 

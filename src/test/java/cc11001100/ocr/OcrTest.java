@@ -3,6 +3,7 @@ package cc11001100.ocr;
 import cc11001100.ocr.clean.ImageCleanImpl;
 import cc11001100.ocr.http.HttpUtil;
 import cc11001100.ocr.split.ImageSplitImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -16,7 +17,8 @@ import java.io.IOException;
  */
 public class OcrTest {
 
-//	@Test
+	@Ignore
+	@Test
 	public void testMain() {
 
 		String captchaUrl = "https://www.w3cschool.cn/scode";

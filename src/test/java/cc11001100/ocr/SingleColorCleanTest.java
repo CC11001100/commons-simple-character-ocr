@@ -1,6 +1,8 @@
 package cc11001100.ocr;
 
 import cc11001100.ocr.clean.SingleColorFilterClean;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,7 +14,8 @@ import java.io.IOException;
  */
 public class SingleColorCleanTest {
 
-//	@Test
+	@Ignore
+	@Test
 	public void test_001() throws IOException {
 		SingleColorFilterClean singleColorClean = new SingleColorFilterClean();
 		BufferedImage rawImage = ImageIO.read(new File("E:/a.png"));
