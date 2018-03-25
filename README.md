@@ -36,7 +36,6 @@
 5. 然后就可以直接使用了  
     ``String ocr(BufferedImage img)``
 6. 这里是几个具体的例子：  
-    - <a target="_blank" href="http://www.cnblogs.com/cc11001100/p/8648169.html">蚂蚁代理免费代理ip爬取（端口图片显示）</a>
     - [蚂蚁代理免费代理ip爬取（端口图片显示）](http://www.cnblogs.com/cc11001100/p/8648169.html)  
     - [酷伯伯实时免费HTTP代理ip爬取（端口图片显示+document.write）](http://www.cnblogs.com/cc11001100/p/8647555.html)
 
