@@ -24,7 +24,7 @@
     </dependency>
     ```
     所有版本可以去这里看[commons-simple-character-ocr maven repository](https://github.com/CC11001100/maven-repo/tree/commons-simple-character-ocr)
-2. 下载一些图片用于生成标注数据，大致有两种情况 
+2. 程序核心的类是OcrUtil，大部分情况下只需要new OcrUtil()调几个API即可。首先下载一些图片用于生成标注数据，大致有两种情况 
     -  有一个地址，发送请求就可以直接下载图片  
         ``init(String url, int times, String saveBaseDir)``  
     - 图片下载比较麻烦，自己下载完再指定所下载的目录   
