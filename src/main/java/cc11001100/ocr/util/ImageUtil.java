@@ -18,7 +18,7 @@ public class ImageUtil {
 
 	private static Logger logger = LogManager.getLogger(ImageUtil.class);
 
-	public static final Integer DEFAULT_BACKGROUND_COLOR = 0X00FFFFFF;
+	public static final Integer DEFAULT_BACKGROUND_COLOR = 0XFFFFFF;
 
 	/**
 	 * 计算图像的哈希值，即将图片内容压缩为一个整数

@@ -80,39 +80,31 @@ public class ImageSplitImpl implements ImageSplit {
 			img = img.getSubimage(dropW / 2, dropH / 2, img.getWidth() - dropW, img.getHeight() - dropH);
 		}
 
-//		for(int i=0; i<img.getWidth(); i++){
-//			for(int j=0; j<img.getHeight(); j++){
-//				System.out.printf("%6s  ", Integer.toString(0XFFFFFF - (img.getRGB(i, j) & 0XFFFFFF), 16).toUpperCase());
-//			}
-//			System.out.println();
-//		}
-
 		List<BufferedImage> list = new ArrayList<>();
-
 		int w = img.getWidth();
 		int h = img.getHeight();
 
-		boolean lastColumnIsBackground = true;
+		boolean lastColumnIsSeparator = true;
 		int beginColumn = -1;
 
 		for (int i = 0; i < w; i++) {
 
-			boolean currentColumnIsBackground = true;
-			for (int j = 0; currentColumnIsBackground && j < h; j++) {
-				currentColumnIsBackground = (img.getRGB(i, j) & 0XFFFFFF) == backgroundColor;
+			boolean currentColumnIsSeparator = true;
+			for (int j = 0; currentColumnIsSeparator && j < h; j++) {
+				currentColumnIsSeparator = isSeparatorPoint(img.getRGB(i, j));
 			}
 
 			// 进入字符区域
-			if (lastColumnIsBackground && !currentColumnIsBackground) {
+			if (lastColumnIsSeparator && !currentColumnIsSeparator) {
 				beginColumn = i;
-			} else if (!lastColumnIsBackground && currentColumnIsBackground) {
+			} else if (!lastColumnIsSeparator && currentColumnIsSeparator) {
 				// 离开字符区域，离开字符区域时将上一个字符割出来
 				BufferedImage charImage = img.getSubimage(beginColumn, 0, i - beginColumn, h);
 				BufferedImage trimCharImage = trimUpAndDown(charImage);
 				list.add(trimCharImage);
 			}
 
-			lastColumnIsBackground = currentColumnIsBackground;
+			lastColumnIsSeparator = currentColumnIsSeparator;
 		}
 
 		return list;
@@ -170,7 +162,7 @@ public class ImageSplitImpl implements ImageSplit {
 	 */
 	private boolean isSeparatorPoint(int rgb) {
 		// 颜色一致或者是透明色都认为是分隔符
-		return rgb == backgroundColor || ((rgb & 0XFF000000) >> 24) == 0;
+		return (rgb & 0XFFFFFF) == (backgroundColor & 0XFFFFFF) || (rgb >> 24) == 0;
 	}
 
 }
