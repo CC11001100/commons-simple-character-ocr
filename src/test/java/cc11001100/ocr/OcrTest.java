@@ -44,4 +44,12 @@ public class OcrTest {
 
 	}
 
+	@Ignore
+	@Test
+	public void testGenAndPrintDictionaryMap() {
+
+		OcrUtil.genAndPrintDictionaryMap("F:/git_repo/gitRepo/mi-pu-killer/tmp/char", "foo", filename -> filename.substring(0, 1));
+
+	}
+
 }

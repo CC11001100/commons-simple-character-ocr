@@ -10,6 +10,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author CC11001100
@@ -45,7 +46,7 @@ public class ImageUtil {
 	 * @return 映射字典
 	 * @see #genDictionary(String)
 	 */
-	public static Map<Integer, String> genDictionary(String taggedCharImageDir, FileFilter fileFilter) {
+	public static Map<Integer, String> genDictionary(String taggedCharImageDir, FileFilter fileFilter, Function<String, String> processFilename) {
 		Map<Integer, String> dictionaryMap = new HashMap<>();
 		File[] charImageFiles = new File(taggedCharImageDir).listFiles(fileFilter);
 		if (charImageFiles == null) {
@@ -55,7 +56,7 @@ public class ImageUtil {
 			try {
 				BufferedImage charBufferedImage = ImageIO.read(charImageFile);
 				int charHashCode = imageHashCode(charBufferedImage);
-				String charName = FileNameUtil.getFileNameNoExtension(charImageFile.getName());
+				String charName = processFilename.apply(FileNameUtil.getFileNameNoExtension(charImageFile.getName()));
 				dictionaryMap.put(charHashCode, charName);
 			} catch (IOException e) {
 				logger.error("read file {} error", charImageFile.getAbsolutePath());
@@ -72,10 +73,10 @@ public class ImageUtil {
 	 *
 	 * @param taggedCharImageDir 标注好的字符图片所在的目录
 	 * @return 映射字典
-	 * @see #genDictionary(String, FileFilter)
+	 * @see #genDictionary(String, FileFilter, Function)
 	 */
 	public static Map<Integer, String> genDictionary(String taggedCharImageDir) {
-		return genDictionary(taggedCharImageDir, file -> true);
+		return genDictionary(taggedCharImageDir, file -> true, filename -> filename);
 	}
 
 }

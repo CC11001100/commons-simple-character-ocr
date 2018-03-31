@@ -14,12 +14,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static cc11001100.ocr.util.ImageUtil.imageHashCode;
 import static java.util.stream.Collectors.joining;
@@ -190,6 +192,11 @@ public class OcrUtil {
 		dictionaryMap.forEach((k, v) -> logger.info("load dictionary mapping = ({}, {})", k, v));
 	}
 
+	public void loadDictionaryMap(String charBaseDir, Function<String, String> processFilename) {
+		dictionaryMap = ImageUtil.genDictionary(charBaseDir, file -> true, processFilename);
+		dictionaryMap.forEach((k, v) -> logger.info("load dictionary mapping = ({}, {})", k, v));
+	}
+
 	/**
 	 * 直接从一个map加载映射
 	 *
@@ -197,6 +204,21 @@ public class OcrUtil {
 	 */
 	public void loadDictionaryMap(Map<Integer, String> dictionaryMap) {
 		this.dictionaryMap = dictionaryMap;
+	}
+
+	/**
+	 * 从指定位置生成映射字典并打印到控制台，用于手动创建Map，这样以后就无需每次都从磁盘加载
+	 *
+	 * @param taggedCharImageDir
+	 * @param mapName
+	 * @param processFilename
+	 * @see #loadDictionaryMap(Map)
+	 */
+	public static void genAndPrintDictionaryMap(String taggedCharImageDir, String mapName, Function<String, String> processFilename) {
+		Map<Integer, String> dictionaryMap = ImageUtil.genDictionary(taggedCharImageDir, file -> true, processFilename);
+		dictionaryMap.forEach((k, v) -> {
+			System.out.printf("%s.put(%d, \"%s\");\n", mapName, k, v);
+		});
 	}
 
 	/**
@@ -211,8 +233,8 @@ public class OcrUtil {
 		}
 		List<BufferedImage> charList = imageSplit.split(img);
 		return charList.stream()
-				.map(x -> dictionaryMap.getOrDefault(imageHashCode(x), ""))
-				.collect(joining());
+			.map(x -> dictionaryMap.getOrDefault(imageHashCode(x), ""))
+			.collect(joining());
 	}
 
 	/**
