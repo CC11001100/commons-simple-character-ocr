@@ -20,7 +20,7 @@
     <dependency>
         <groupId>cc11001100</groupId>
         <artifactId>commons-simple-character-ocr</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.3</version>
     </dependency>
     ```
     所有版本可以去这里看[commons-simple-character-ocr maven repository](https://github.com/CC11001100/maven-repo/tree/commons-simple-character-ocr)

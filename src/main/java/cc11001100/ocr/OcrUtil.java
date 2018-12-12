@@ -10,11 +10,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -172,14 +172,15 @@ public class OcrUtil {
 		});
 
 		logger.info("auto process part over, now turn you!");
-		// 判断操作系统类型，自动打开标注文件所在目录
-//		if (System.getProperty("os.name").contains("Windows")) {
-//			try {
-//				Runtime.getRuntime().exec("cmd /c start explorer " + toBasePath);
-//			} catch (IOException e) {
-//				logger.info("open explorer failed, dir={}", toBasePath);
-//			}
-//		}
+		// 自动打开标注文件所在目录
+		try {
+			Desktop desktop = Desktop.getDesktop();
+			if (desktop.isSupported(Desktop.Action.OPEN)) {
+				desktop.open(new File(toBasePath));
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 	/**
@@ -233,8 +234,8 @@ public class OcrUtil {
 		}
 		List<BufferedImage> charList = imageSplit.split(img);
 		return charList.stream()
-			.map(x -> dictionaryMap.getOrDefault(imageHashCode(x), ""))
-			.collect(joining());
+				.map(x -> dictionaryMap.getOrDefault(imageHashCode(x), ""))
+				.collect(joining());
 	}
 
 	/**
